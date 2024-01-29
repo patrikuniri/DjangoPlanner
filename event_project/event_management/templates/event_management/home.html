@@ -1,0 +1,71 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css'%}">
+</head>
+<body>
+    <h1> Planner App</h1>
+
+    <h2 class = "styles">Add Event</h2>
+    <form method="post" action="{% url 'add_event' %}">
+        {% csrf_token %}
+        <label for="event_name">Name:</label>
+        <input type="text" id="event_name" name="event_name" required><br>
+        <label for="event_place">Place:</label>
+        <input type="text" id="event_place" name="event_place" required><br>
+        <label for="event_date">Date:</label>
+        <input type="date" id="event_date" name="event_date" required><br>
+        <label for="event_time">Time:</label>
+        <input type="time" id="event_time" name="event_time" required><br>
+        <button type="submit">Add Event</button>
+    </form>
+
+    <h2 class = "styles">Events</h2>
+    <ul>
+        {% for event in events %}
+            <li>{{ event.name }} - {{ event.place }} - {{ event.date }} - {{ event.time }} 
+                <form method="post" action="{% url 'delete_event' event.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Pending Participants</h2>
+    <ul>
+        {% for participant in participants %}
+            {% if not participant.accepted %}
+                <li>{{ participant.name }} - {{ participant.surname }} - {{ participant.event }}
+                    </form>
+                    <form method="post" action="{% url 'delete_participant' participant.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endif %}
+        {% empty %}
+            <li>No participants yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Accepted Participants</h2>
+    <ul>
+        {% for participant in accepted_participants %}
+            <li>{{ participant.name }} - {{ participant.surname }} - {{ participant.event }}
+                <form method="post" action="{% url 'delete_participant' participant.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
